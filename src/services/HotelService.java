@@ -4,7 +4,7 @@ import entities.Hotel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class HotelService {
 
@@ -17,12 +17,12 @@ public class HotelService {
 
     public Hotel findHotelById(long hotelId) {
 
-        Optional<Hotel> hotel = Optional.ofNullable(
-                hotelRepository.stream()
-                .filter(h -> h.getId() == hotelId).findFirst()
-                .orElse(addNewHotel(hotelId)));
+        Hotel hotel = hotelRepository.stream()
+                        .filter(h -> h.getId() == hotelId)
+                        .findFirst()
+                        .orElse(addNewHotel(hotelId));
 
-        return hotel.get();
+        return hotel;
     }
 
     private Hotel addNewHotel(long hotelId) {

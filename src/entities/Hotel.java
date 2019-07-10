@@ -2,7 +2,7 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class Hotel {
 
@@ -18,12 +18,11 @@ public class Hotel {
     }
 
     public void setRoomType(String roomType, int quantity) {
-        Optional<Room> optionalRoom = Optional.ofNullable(rooms.stream()
+        Room room = rooms.stream()
                 .filter(r -> r.getType() == roomType)
                 .findFirst()
-                .orElse(addRoomType(roomType, quantity)));
+                .orElse(addRoomType(roomType, quantity));
 
-        Room room = optionalRoom.get();
         room.setQuantity(quantity);
     }
 

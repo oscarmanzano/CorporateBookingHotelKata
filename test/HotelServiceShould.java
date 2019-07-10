@@ -18,4 +18,5 @@ public class HotelServiceShould {
         assertEquals(1, hotel.getId());
 
     }
+    
 }
