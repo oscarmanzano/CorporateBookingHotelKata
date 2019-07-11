@@ -11,7 +11,16 @@ public class HotelService {
     List<Hotel> hotelRepository = new ArrayList<>();
 
     public void setRoomType(long hotelId, String roomType, int quantity) {
-        Hotel hotel = findHotelById(hotelId);
+
+        Hotel hotel;
+
+        if(isHotelInRepository(hotelId)){
+            hotel = findHotelById(hotelId);
+        }
+        else {
+            hotel = addNewHotel(hotelId);
+        }
+
         hotel.setRoomType(roomType, quantity);
     }
 
@@ -19,8 +28,7 @@ public class HotelService {
 
         Hotel hotel = hotelRepository.stream()
                         .filter(h -> h.getId() == hotelId)
-                        .findFirst()
-                        .orElse(addNewHotel(hotelId));
+                        .findFirst().get();
 
         return hotel;
     }
@@ -29,5 +37,12 @@ public class HotelService {
         Hotel hotel = new Hotel(hotelId);
         hotelRepository.add(hotel);
         return hotel;
+    }
+
+    private boolean isHotelInRepository(long hotelId){
+        long count = hotelRepository.stream()
+                .filter(h -> h.getId() == hotelId).count();
+
+        return (count == 1) ? true:false;
     }
 }

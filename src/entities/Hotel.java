@@ -2,6 +2,7 @@ package entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Hotel {
@@ -19,7 +20,7 @@ public class Hotel {
 
     public void setRoomType(String roomType, int quantity) {
         Room room = rooms.stream()
-                .filter(r -> r.getType() == roomType)
+                .filter(r -> r.getType().equals(roomType))
                 .findFirst()
                 .orElse(addRoomType(roomType, quantity));
 
@@ -30,5 +31,18 @@ public class Hotel {
         Room room = new Room(roomType, quantity);
         rooms.add(room);
         return room;
+    }
+
+    public boolean hasRoomType(String roomType){
+        Optional<Room> room = Optional.ofNullable(rooms.stream().filter(r -> r.getType().equals(roomType)).findAny().orElse(null));
+        return room.isPresent();
+    }
+
+    public int getQuantityByRoomType(String roomType) {
+        Optional<Room> optionalRoom = Optional.ofNullable(rooms.stream().filter(r -> r.getType().equals(roomType)).findAny().orElse(null));
+
+        Room room = optionalRoom.get();
+
+        return room.getQuantity();
     }
 }

@@ -59,7 +59,7 @@ public class BookingFeature {
         assertFalse(isBooked);
 
     }
-
+/*
     @Test
     public void bookingWithExistingEmployeeReturnsTrue() {
 
@@ -68,5 +68,14 @@ public class BookingFeature {
         isBooked = bookingService.book(EXISTING_EMPLOYEE_ID, EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, null, null);
 
         assertTrue(isBooked);
+    }
+*/
+    @Test
+    public void bookingWithNoEmployeeReturnsFalse(){
+
+        hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
+        isBooked = bookingService.book(2, EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, null, null);
+
+        assertFalse(isBooked);
     }
 }
