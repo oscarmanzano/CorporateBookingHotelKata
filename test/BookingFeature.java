@@ -1,9 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
-import services.BookingService;
-import services.CalendarService;
-import services.PolicyService;
-import services.HotelService;
+import services.*;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
@@ -16,12 +13,14 @@ public class BookingFeature {
     public static final String EXISTING_ROOM_TYPE = "suite";
     public static final String NON_EXISTING_ROOM_TYPE = "";
     public static final int EXISTING_EMPLOYEE_ID = 1;
+    public static final int EXISTING_COMPANY_ID = 1;
 
     private boolean isBooked;
     private PolicyService policyService;
     private CalendarService calendarService;
     private HotelService hotelService;
     private BookingService bookingService;
+    private CompanyService companyService;
 
     @Before
     public void setUp(){
@@ -29,7 +28,8 @@ public class BookingFeature {
         calendarService = mock(CalendarService.class);
 
         hotelService = new HotelService();
-        bookingService = new BookingService(hotelService, policyService, calendarService);
+        companyService = new CompanyService();
+        bookingService = new BookingService(hotelService, policyService, calendarService, companyService);
 
         when(policyService.isBookingAllowed(EXISTING_EMPLOYEE_ID, EXISTING_ROOM_TYPE)).thenReturn(true);
         when(calendarService.isBookingAllowed(null, null, EXISTING_ROOM_TYPE, EXISTING_HOTEL_ID)).thenReturn(true);
@@ -39,8 +39,9 @@ public class BookingFeature {
     @Test
     public void bookingWithExistingEmployeeReturnsFalse() {
 
-        hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
+        companyService.addEmployee(EXISTING_COMPANY_ID, EXISTING_EMPLOYEE_ID);
 
+        hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
 
         isBooked = bookingService.book(EXISTING_EMPLOYEE_ID, NON_EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, null, null);
 
@@ -59,9 +60,11 @@ public class BookingFeature {
         assertFalse(isBooked);
 
     }
-/*
+
     @Test
     public void bookingWithExistingEmployeeReturnsTrue() {
+
+        companyService.addEmployee(EXISTING_COMPANY_ID, EXISTING_EMPLOYEE_ID);
 
         hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
 
@@ -69,7 +72,7 @@ public class BookingFeature {
 
         assertTrue(isBooked);
     }
-*/
+
     @Test
     public void bookingWithNoEmployeeReturnsFalse(){
 

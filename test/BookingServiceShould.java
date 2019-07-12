@@ -4,10 +4,7 @@ import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import services.BookingService;
-import services.CalendarService;
-import services.HotelService;
-import services.PolicyService;
+import services.*;
 
 
 public class BookingServiceShould {
@@ -18,29 +15,32 @@ public class BookingServiceShould {
     private HotelService hotelService;
     private PolicyService policyService;
     private BookingService bookingService;
+    private CompanyService companyService;
 
 
     @Before
     public void setUp() {
         hotelService = new HotelService();
+        companyService = new CompanyService();
         policyService = mock(PolicyService.class);
         CalendarService calendarService = mock(CalendarService.class);
         when(policyService.isBookingAllowed(EXISTING_EMPLOYEE_ID, EXISTING_ROOM_TYPE)).thenReturn(true);
         when(calendarService.isBookingAllowed(null, null, EXISTING_ROOM_TYPE, EXISTING_HOTEL_ID)).thenReturn(true);
-        bookingService = new BookingService(hotelService, policyService, calendarService);
+        bookingService = new BookingService(hotelService, policyService, calendarService, companyService);
     }
 
     @Test
-    public void validateHotelAndRoomTypeAndReturnFalse(){
-        hotelService.setRoomType(EXISTING_HOTEL_ID, NON_EXISTING_ROOM_TYPE, 1);
+    public void validateHotelAndRoomTypeReturnFalse(){
 
-        boolean validated = bookingService.validate(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE);
+        hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
+
+        boolean validated = bookingService.validate(EXISTING_HOTEL_ID, NON_EXISTING_ROOM_TYPE);
 
         assertFalse(validated);
     }
 
     @Test
-    public void validateHotelAndRoomTypeAndReturnTrue(){
+    public void validateHotelAndRoomTypeReturnTrue(){
         hotelService.setRoomType(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE, 1);
 
         boolean validated = bookingService.validate(EXISTING_HOTEL_ID, EXISTING_ROOM_TYPE);

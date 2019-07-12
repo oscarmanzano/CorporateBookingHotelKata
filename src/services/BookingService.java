@@ -10,25 +10,33 @@ public class BookingService {
 
     private HotelService hotelService;
     private List<Booking> bookingRepository = new ArrayList<>();
+    private CompanyService companyService;
 
-    public BookingService(HotelService hotelService, PolicyService policyService, CalendarService calendarService) {
+    public BookingService(HotelService hotelService, PolicyService policyService,
+                          CalendarService calendarService, CompanyService companyService) {
         this.hotelService = hotelService;
+        this.companyService = companyService;
     }
 
     public boolean book(int employeeId, int hotelId, String roomType, Object o, Object o1) {
         Hotel hotel = hotelService.findHotelById(hotelId);
 
-        int maximumAvailableRooms = hotel.getQuantityByRoomType(roomType);
+        boolean isBookingAllowed = false;
 
-        long bookedRooms = bookingRepository.stream()
-                .filter(b -> b.getHotelId() == hotelId)
-                .filter(b -> b.getRoomType().equals(roomType))
-                .count();
+        if(hotel != null && companyService.hasEmployeeId(employeeId)) {
 
-        boolean isBookingAllowed = (bookedRooms < maximumAvailableRooms);
+            int maximumAvailableRooms = hotel.getQuantityByRoomType(roomType);
 
-        if (isBookingAllowed) {
-            bookingRepository.add(new Booking(hotelId, roomType));
+            long bookedRooms = bookingRepository.stream()
+                    .filter(b -> b.getHotelId() == hotelId)
+                    .filter(b -> b.getRoomType().equals(roomType))
+                    .count();
+
+            isBookingAllowed = (bookedRooms < maximumAvailableRooms);
+
+            if (isBookingAllowed) {
+                bookingRepository.add(new Booking(hotelId, roomType));
+            }
         }
 
         return isBookingAllowed;

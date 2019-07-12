@@ -4,6 +4,7 @@ import entities.Hotel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 public class HotelService {
@@ -26,11 +27,11 @@ public class HotelService {
 
     public Hotel findHotelById(long hotelId) {
 
-        Hotel hotel = hotelRepository.stream()
+        Optional<Hotel> optionalHotel = Optional.of(hotelRepository.stream()
                         .filter(h -> h.getId() == hotelId)
-                        .findFirst().get();
+                        .findFirst()).orElse(null);
 
-        return hotel;
+        return (optionalHotel.isPresent()) ? optionalHotel.get():null;
     }
 
     private Hotel addNewHotel(long hotelId) {

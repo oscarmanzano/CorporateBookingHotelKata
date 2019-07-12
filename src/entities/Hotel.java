@@ -34,15 +34,17 @@ public class Hotel {
     }
 
     public boolean hasRoomType(String roomType){
-        Optional<Room> room = Optional.ofNullable(rooms.stream().filter(r -> r.getType().equals(roomType)).findAny().orElse(null));
+        Optional<Room> room = rooms.stream().filter(r -> r.getType().equals(roomType)).findAny();
         return room.isPresent();
     }
 
     public int getQuantityByRoomType(String roomType) {
-        Optional<Room> optionalRoom = Optional.ofNullable(rooms.stream().filter(r -> r.getType().equals(roomType)).findAny().orElse(null));
 
-        Room room = optionalRoom.get();
+        Optional<Room> optionalRoom = Optional.of(rooms.stream()
+                .filter(r -> r.getType().equals(roomType))
+                .findFirst())
+                .orElse(null);
 
-        return room.getQuantity();
+        return optionalRoom.map(Room::getQuantity).orElse(0);
     }
 }
